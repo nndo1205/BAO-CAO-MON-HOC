@@ -1,0 +1,57 @@
+﻿@model BanSach.Models.NguoiDung
+
+@{
+    ViewData["Title"] = "Đăng nhập";
+}
+
+<div class="max-w-md mx-auto mt-10 bg-white p-6 shadow rounded">
+    <form asp-controller="TaiLieu" asp-action="Index" method="get" class="mb-4 pl-8 pt-4">
+        <button type="submit" class="text-sm text-gray-200 hover:underline border border-gray-400 px-3 py-1 rounded">
+            ← Quay lại trang chủ
+        </button>
+    </form>
+
+    <h2 class="text-xl font-bold mb-4">Đăng nhập tài khoản</h2>
+
+    @if (!string.IsNullOrEmpty(ViewBag.ThongBao as string))
+    {
+        <div class="text-sm text-red-500 bg-red-100 px-3 py-2 rounded mb-4">
+            @ViewBag.ThongBao
+        </div>
+    }
+
+    <form asp-action="DangNhap" method="post">
+        <div class="mb-4">
+            <label for="Email" class="block text-sm font-medium mb-1">Email</label>
+            <input asp-for="Email" class="w-full border px-3 py-2 rounded" />
+            <span asp-validation-for="Email" class="text-sm text-red-500"></span>
+        </div>
+
+        <div class="mb-4">
+            <label for="MatKhau" class="block text-sm font-medium mb-1">Mật khẩu</label>
+            <div class="relative">
+                <input asp-for="MatKhau" id="matkhau" type="password" class="w-full border px-3 py-2 rounded" />
+                <button type="button" onclick="togglePassword()" class="absolute right-3 top-2 text-sm text-blue-600">Ẩn/Hiện</button>
+            </div>
+            <span asp-validation-for="MatKhau" class="text-sm text-red-500"></span>
+        </div>
+
+        <button type="submit" class="w-full bg-blue-600 text-black py-2 rounded hover:bg-blue-700">
+            Đăng nhập
+        </button>
+        <p class="mt-4 text-sm text-center text-gray-600">
+            Chưa có tài khoản?
+            <a href="@Url.Action("DangKy", "TaiKhoan")" class="text-blue-600 hover:underline">Đăng ký ngay</a>
+        </p>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function togglePassword() {
+            const input = document.getElementById("matkhau");
+            input.type = input.type === "password" ? "text" : "password";
+        }
+    </script>
+}

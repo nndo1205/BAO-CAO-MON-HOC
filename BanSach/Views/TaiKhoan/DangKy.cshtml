@@ -1,0 +1,63 @@
+﻿@model BanSach.Models.NguoiDung
+@{
+    ViewData["Title"] = "Đăng ký";
+}
+
+<div class="max-w-md mx-auto mt-10 bg-white p-6 shadow rounded">
+    <form asp-controller="TaiLieu" asp-action="Index" method="get" class="mb-4 pl-8 pt-4">
+        <button type="submit" class="text-sm text-gray-200 hover:underline border border-gray-400 px-3 py-1 rounded">
+            ← Quay lại trang chủ
+        </button>
+    </form>
+
+    <h2 class="text-xl font-bold mb-4">Đăng ký tài khoản</h2>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="bg-green-100 text-green-700 p-3 rounded mb-3">
+            @TempData["Success"]
+        </div>
+    }
+
+    <form asp-action="DangKy" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-red-500 text-sm mb-3"></div>
+
+        <div class="mb-4">
+            <label asp-for="HoTen" class="block text-sm font-medium">Họ tên</label>
+            <input asp-for="HoTen" class="w-full border px-3 py-2 rounded" required />
+            <span asp-validation-for="HoTen" class="text-red-500 text-xs"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="Email" class="block text-sm font-medium">Email</label>
+            <input asp-for="Email" class="w-full border px-3 py-2 rounded" required />
+            <span asp-validation-for="Email" class="text-red-500 text-xs"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="MatKhau" class="block text-sm font-medium">Mật khẩu</label>
+            <div class="relative">
+                <input asp-for="MatKhau" id="matkhau" type="password" class="w-full border px-3 py-2 rounded" required />
+                <button type="button" onclick="togglePassword()" class="absolute right-3 top-2 text-sm text-blue-600">👁️</button>
+            </div>
+            <span asp-validation-for="MatKhau" class="text-red-500 text-xs"></span>
+        </div>
+
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded mt-4">Đăng ký</button>
+    </form>
+
+    <div class="mt-4 text-center">
+        <span class="text-sm">Đã có tài khoản?</span>
+        <a asp-action="DangNhap" class="text-blue-600 hover:underline">Đăng nhập ngay</a>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function togglePassword() {
+            const input = document.getElementById("matkhau");
+            input.type = input.type === "password" ? "text" : "password";
+        }
+    </script>
+}

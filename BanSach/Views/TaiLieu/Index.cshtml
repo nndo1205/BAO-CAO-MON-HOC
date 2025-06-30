@@ -1,0 +1,141 @@
+﻿@model BanSach.ViewModels.TaiLieuViewModel
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sản phẩm tài liệu học tập</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+</head>
+<body class="bg-gray-100 font-sans leading-relaxed">
+
+    <!-- Header -->
+    <!-- Phần header -->
+    <header class="bg-white shadow p-4 flex justify-between items-center">
+        <div class="flex items-center gap-2 text-blue-600 font-bold text-lg">
+            <i class="fas fa-book"></i>
+            <span>Tài liệu học tập</span>
+        </div>
+        <div class="flex gap-4 text-sm text-gray-700">
+            @{
+                var ten = Context.Session.GetString("HoTen");
+            }
+            @if (string.IsNullOrEmpty(ten))
+            {
+                <a href="@Url.Action("DangNhap", "TaiKhoan")" class="hover:text-blue-600">Đăng nhập</a>
+                <a href="@Url.Action("DangKy", "TaiKhoan")" class="hover:text-blue-600">Đăng ký</a>
+            }
+            else
+            {
+                <span class="text-sm text-gray-600">👋 Xin chào, @ten</span>
+                <a href="@Url.Action("DangXuat", "TaiKhoan")" class="ml-3 text-red-500 hover:underline">Đăng xuất</a>
+            }
+            <a href="@Url.Action("Index", "GioHang")" class="hover:text-blue-600 flex items-center gap-1">
+                <i class="fas fa-shopping-cart"></i> <span>Giỏ hàng</span>
+            </a>
+        </div>
+    </header>
+
+
+    <!-- Tìm kiếm -->
+    <div class="bg-white p-4 flex flex-wrap items-center gap-4 shadow">
+        <form asp-controller="TaiLieu" asp-action="TimKiem" method="get" class="flex gap-4 items-center w-full">
+            <input type="text" name="tuKhoa" placeholder="Tìm kiếm tài liệu..."
+                   class="flex-1 border border-gray-300 rounded px-3 py-2 text-sm focus:outline-blue-500" />
+            <button type="submit" class="text-sm bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Tìm kiếm</button>
+        </form>
+        <a href="@Url.Action("DanhSach", "DonHang")"
+           class="text-sm bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+            📦 Đơn hàng của tôi
+        </a>
+
+    </div>
+
+    <!-- Danh mục -->
+    <div class="p-4 bg-white mt-4">
+        <h2 class="text-lg font-semibold mb-2">📚 Danh mục sản phẩm</h2>
+        <div class="flex flex-wrap gap-2 text-sm">
+            <button class="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">Tài liệu học tập</button>
+        </div>
+    </div>
+
+    <!-- Danh sách tài liệu chính -->
+    <main class="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
+        @foreach (var item in Model.SanPhamChinh)
+        {
+            <div class="bg-white rounded-xl shadow hover:shadow-lg p-4 flex flex-col transition-all">
+                <img src="@item.AnhBia" alt="Ảnh tài liệu" class="h-48 w-full object-contain rounded-lg mb-3 shadow-sm" />
+                <h3 class="text-base font-semibold text-gray-800 mb-1">@item.TenTaiLieu</h3>
+                <div class="text-red-600 font-bold text-base">
+                    @item.GiaKhuyenMai đ <span class="text-gray-400 line-through text-sm">@item.GiaSoc đ</span>
+                </div>
+                <div class="text-gray-500 text-sm mb-3">Đã bán: @item.LuotBan</div>
+                <a href="@Url.Action("ChiTiet", "TaiLieu", new { id = item.MaTaiLieu })"
+                   class="mt-auto bg-red-600 hover:bg-red-700 text-white text-sm py-2 rounded-md text-center font-medium block">
+                    🛒 Mua ngay
+                </a>
+            </div>
+        }
+    </main>
+
+    <!-- Gợi ý sản phẩm -->
+    <section class="p-4 mt-10">
+        <h2 class="text-lg font-semibold mb-4">🧠 Gợi ý cho bạn</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
+            @foreach (var goiY in Model.GoiY)
+            {
+                <div class="bg-white rounded shadow p-3 flex flex-col">
+                    <img src="@goiY.AnhBia" class="h-48 w-full object-contain rounded-lg mb-3 shadow-sm" alt="Gợi ý">
+                    <h3 class="text-sm font-semibold text-gray-800">@goiY.TenTaiLieu</h3>
+                    <div class="text-red-600 text-sm font-semibold">
+                        @goiY.GiaKhuyenMai đ <span class="text-gray-400 line-through text-xs">@goiY.GiaSoc đ</span>
+                    </div>
+                    <div class="text-xs text-gray-500">Đã bán: @goiY.LuotBan</div>
+                    <a href="@Url.Action("ChiTiet", "TaiLieu", new { id = goiY.MaTaiLieu })"
+                       class="mt-2 w-full bg-green-600 text-white text-xs py-2 rounded hover:bg-green-700 text-center block">
+                        🛒 Mua ngay
+                    </a>
+                </div>
+            }
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t mt-10 p-6 text-sm text-gray-700">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+                <h4 class="font-semibold mb-2">Về chúng tôi</h4>
+                <ul>
+                    <li><a href="#" class="hover:underline">Giới thiệu</a></li>
+                    <li><a href="#" class="hover:underline">Liên hệ</a></li>
+                    <li><a href="#" class="hover:underline">Câu hỏi thường gặp</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-2">Hỗ trợ</h4>
+                <ul>
+                    <li><a href="#" class="hover:underline">Chính sách bảo mật</a></li>
+                    <li><a href="#" class="hover:underline">Điều khoản</a></li>
+                    <li><a href="#" class="hover:underline">Hoàn tiền</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-2">Kết nối</h4>
+                <ul>
+                    <li><a href="#" class="hover:underline">Facebook</a></li>
+                    <li><a href="#" class="hover:underline">Zalo</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-2">Liên hệ</h4>
+                <p>Email: support@example.com</p>
+                <p>Hotline: 0123 456 789</p>
+            </div>
+        </div>
+        <div class="text-center text-xs text-gray-400 mt-4">
+            © 2025 Công ty Tài liệu Online. All rights reserved.
+        </div>
+    </footer>
+</body>
+</html>

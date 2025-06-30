@@ -1,0 +1,65 @@
+﻿@model BanSach.Models.TaiLieu
+@{
+    ViewData["Title"] = "Chi tiết tài liệu";
+}
+
+<div class="max-w-6xl mx-auto px-4 py-6">
+    <!-- Nút quay lại -->
+    <form asp-controller="TaiLieu" asp-action="Index" method="get" class="mb-4 pl-8 pt-4">
+        <button type="submit" class="text-sm text-gray-200 hover:underline border border-gray-400 px-3 py-1 rounded">
+            ← Quay lại trang chủ
+        </button>
+    </form>
+
+    <!-- Thông báo nếu có -->
+    @if (TempData["ThongBao"] != null)
+    {
+        <div class="bg-green-100 border border-green-400 text-green-800 px-4 py-2 rounded mb-4">
+            @TempData["ThongBao"]
+        </div>
+    }
+
+    <!-- Layout 2 cột -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start bg-white p-6 rounded-lg shadow">
+        <!-- Cột trái: ảnh -->
+        <div class="flex justify-center">
+            <img src="@Model.AnhBia" alt="@Model.TenTaiLieu"
+                 class="w-full max-w-md h-auto object-contain rounded border" />
+        </div>
+
+        <!-- Cột phải: thông tin -->
+        <div>
+            <h1 class="text-2xl font-bold text-gray-800 mb-3">@Model.TenTaiLieu</h1>
+
+            <p class="text-sm text-gray-600 mb-1">Tác giả: <span class="font-medium">Nhiều tác giả</span></p>
+            <p class="text-sm text-gray-500 mb-2">Đã bán: <strong>@Model.LuotBan</strong></p>
+
+            <!-- Giá -->
+            <div class="flex items-center gap-3 mt-2 mb-4">
+                <span class="text-2xl font-bold text-red-600">@Model.GiaKhuyenMai đ</span>
+            </div>
+
+            <!-- Mô tả -->
+            <div class="mt-4">
+                <h4 class="text-base font-semibold text-gray-700 mb-1">Mô tả sản phẩm</h4>
+                <p class="text-sm text-gray-600">@Model.MoTa</p>
+            </div>
+
+            <!-- Nút -->
+            <div class="flex flex-col sm:flex-row gap-4 mt-6">
+                <!-- Nút Thêm vào giỏ hàng -->
+                <a href="@Url.Action("ThemVaoGio", "GioHang", new { id = Model.MaTaiLieu })"
+                   class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-black py-2 px-4 rounded text-sm font-semibold text-center no-underline">
+                    🛒 Thêm vào giỏ hàng
+                </a>
+
+                <!-- Nút Thanh toán -->
+                <a href="@Url.Action("Index", "ThanhToan", new { id = Model.MaTaiLieu })"
+                   class="flex-1 bg-red-600 hover:bg-red-700 text-black py-2 px-4 rounded text-sm font-semibold text-center no-underline">
+                    💳 Thanh toán
+                </a>
+
+            </div>
+        </div>
+    </div>
+</div>

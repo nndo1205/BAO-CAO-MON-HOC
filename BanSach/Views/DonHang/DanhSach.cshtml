@@ -1,0 +1,53 @@
+﻿@model List<DonHang>
+
+@{
+    ViewData["Title"] = "Danh sách đơn hàng";
+}
+
+<div class="max-w-6xl mx-auto p-6 bg-white rounded shadow space-y-8">
+    <form asp-controller="TaiLieu" asp-action="Index" method="get" class="mb-4 pl-8 pt-4">
+        <button type="submit" class="text-sm text-blue-600 hover:underline border border-gray-400 px-3 py-1 rounded">
+            ← Quay lại trang chủ
+        </button>
+    </form>
+
+    <h2 class="text-2xl font-bold mb-6">📦 Đơn hàng của bạn</h2>
+
+    @if (Model == null || Model.Count == 0)
+    {
+        <div class="text-center text-gray-500 text-base mt-4">
+            Bạn chưa có đơn hàng nào.
+        </div>
+    }
+    else
+    {
+        @foreach (var donHang in Model)
+        {
+            <div class="border border-gray-200 p-4 rounded">
+                <div class="flex justify-between items-center mb-3">
+                    <div>
+                        <span class="font-semibold text-gray-700">Mã đơn:</span> @donHang.MaDonHang<br />
+                        <span class="font-semibold text-gray-700">Ngày đặt:</span> @donHang.NgayDat.ToString("dd/MM/yyyy")<br />
+                        <span class="font-semibold text-gray-700">Trạng thái:</span> @donHang.TrangThai
+                    </div>
+                    <div class="text-red-600 font-bold text-lg">
+                        Tổng tiền: @String.Format("{0:#,##0}đ", donHang.TongTien)
+                    </div>
+                </div>
+
+                <!-- Sản phẩm trong đơn hàng -->
+                <div class="flex flex-wrap gap-4">
+                    @foreach (var ct in donHang.ChiTietDonHangs)
+                    {
+                        <div class="w-48 p-2 border rounded shadow-sm">
+                            <img src="@ct.TaiLieu.AnhBia" alt="Ảnh" class="h-24 w-full object-contain mb-2 rounded" />
+                            <div class="font-medium text-gray-800 text-sm">@ct.TaiLieu.TenTaiLieu</div>
+                            <div class="text-gray-500 text-sm">SL: @ct.SoLuong</div>
+                            <div class="text-red-600 font-semibold text-sm">@String.Format("{0:#,##0}đ", ct.Gia)</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+</div>

@@ -1,0 +1,75 @@
+﻿@model List<BanSach.Models.GioHangItem>
+@{
+    ViewData["Title"] = "Giỏ hàng";
+    decimal tongTien = 0;
+}
+
+<div class="max-w-5xl mx-auto px-4 py-6 bg-white rounded shadow">
+    <!-- Nút quay lại -->
+    <form asp-controller="TaiLieu" asp-action="Index" method="get" class="mb-4 pl-8 pt-4">
+        <button type="submit" class="text-sm text-blue-600 hover:underline border border-gray-400 px-3 py-1 rounded">
+            ← Quay lại trang chủ
+        </button>
+    </form>
+
+    <h2 class="text-xl font-semibold mb-4">🛒 Giỏ hàng của bạn</h2>
+
+    @if (Model.Count == 0)
+    {
+        <p class="text-gray-600">Chưa có sản phẩm nào trong giỏ hàng.</p>
+    }
+    else
+    {
+        <table class="w-full text-sm table-auto border">
+            <thead class="bg-gray-100 text-left">
+                <tr>
+                    <th class="p-2">Ảnh</th>
+                    <th class="p-2">Tên tài liệu</th>
+                    <th class="p-2 text-center">Số lượng</th>
+                    <th class="p-2 text-right">Giá</th>
+                    <th class="p-2 text-right">Thành tiền</th>
+                    <th class="p-2 text-center">Xoá</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    var thanhTien = item.SoLuong * item.GiaKhuyenMai;
+                    tongTien += thanhTien;
+                    <tr class="border-b">
+                        <td class="p-2">
+                            <img src="@item.AnhBia" class="h-14 w-auto object-contain rounded border" />
+                        </td>
+                        <td class="p-2 font-medium text-gray-800">@item.TenTaiLieu</td>
+                        <td class="p-2 text-center">
+                            <form asp-controller="GioHang" asp-action="CapNhatSoLuong" method="post" class="flex justify-center items-center gap-1">
+                                <input type="hidden" name="maTaiLieu" value="@item.MaTaiLieu" />
+                                <button name="action" value="giam" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300">-</button>
+                                <span class="px-2 font-semibold">@item.SoLuong</span>
+                                <button name="action" value="tang" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300">+</button>
+                            </form>
+                        </td>
+                        <td class="p-2 text-right text-red-600">@String.Format("{0:#,##0}đ", item.GiaKhuyenMai)</td>
+                        <td class="p-2 text-right">@String.Format("{0:#,##0}đ", thanhTien)</td>
+                        <td class="p-2 text-center">
+                            <form asp-controller="GioHang" asp-action="Xoa" method="post">
+                                <input type="hidden" name="maTaiLieu" value="@item.MaTaiLieu" />
+                                <button class="text-red-500 hover:underline text-sm">Xoá</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="text-right font-semibold text-lg mt-4">
+            Tổng tiền: <span class="text-red-600">@String.Format("{0:#,##0}đ", tongTien)</span>
+        </div>
+
+        <form asp-controller="ThanhToan" asp-action="Index" method="get" class="mt-6 text-right">
+            <button type="submit" class="bg-red-600 text-black px-6 py-2 rounded hover:bg-red-700">
+                Tiến hành thanh toán
+            </button>
+        </form>
+    }
+</div>

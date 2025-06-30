@@ -1,0 +1,85 @@
+﻿@model BanSach.ViewModels.ThanhToanViewModel
+@{
+    ViewData["Title"] = "Thanh toán";
+}
+
+@if (Model.Sach != null)
+{
+    <!-- Nếu thanh toán trực tiếp từ 1 sách -->
+    <form asp-controller="TaiLieu" asp-action="ChiTiet" method="get" class="mb-4 pl-8 pt-4">
+        <input type="hidden" name="id" value="@Model.Sach.MaTaiLieu" />
+        <button type="submit" class="text-sm text-blue-600 hover:underline border border-gray-400 px-3 py-1 rounded">
+            ← Quay lại chi tiết sách
+        </button>
+    </form>
+}
+else
+{
+    <!-- Nếu thanh toán từ giỏ hàng -->
+    <form asp-controller="GioHang" asp-action="Index" method="get" class="mb-4 pl-8 pt-4">
+        <button type="submit" class="text-sm text-blue-600 hover:underline border border-gray-400 px-3 py-1 rounded">
+            ← Quay lại giỏ hàng
+        </button>
+    </form>
+}
+<div class="bg-white p-8 rounded-lg max-w-xl mx-auto shadow-xl">
+
+    <h1 class="text-3xl font-bold mb-8 text-center text-gray-800">Thông tin thanh toán</h1>
+
+    @* Hiển thị sách từ giỏ hàng *@
+    @if (Model.GioHang != null && Model.GioHang.Count > 0)
+    {
+        <div class="mb-6 border border-gray-200 p-4 rounded">
+            <h3 class="text-lg font-semibold mb-2">Sản phẩm trong giỏ hàng</h3>
+            <ul class="space-y-3">
+                @foreach (var item in Model.GioHang)
+                {
+                    <li class="flex justify-between items-center border-b pb-2">
+                        <div>
+                            <div class="font-semibold text-gray-800">@item.TenTaiLieu</div>
+                            <div class="text-sm text-gray-500">Số lượng: @item.SoLuong</div>
+                        </div>
+                        <div class="text-red-600 font-bold">
+                            @String.Format("{0:#,##0}đ", item.GiaKhuyenMai * item.SoLuong)
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+
+    <form asp-action="DatHang" method="post" class="space-y-6">
+        @* Hiển thị nếu thanh toán từ 1 sách *@
+        @if (Model.Sach != null)
+        {
+            <input type="hidden" name="Sach.MaTaiLieu" value="@Model.Sach.MaTaiLieu" />
+            <input type="hidden" name="Sach.TenTaiLieu" value="@Model.Sach.TenTaiLieu" />
+            <input type="hidden" name="Sach.GiaKhuyenMai" value="@Model.Sach.GiaKhuyenMai" />
+            <input type="hidden" name="Sach.AnhBia" value="@Model.Sach.AnhBia" />
+        }
+        <div>
+            <label class="block text-base font-semibold text-gray-700 mb-2">Họ tên</label><br />
+            <input asp-for="HoTen" class="w-full border px-4 py-2 rounded" required />
+        </div>
+        <div>
+            <label class="block text-base font-semibold text-gray-700 mb-2">Email</label><br />
+            <input asp-for="Email" class="w-full border px-4 py-2 rounded" required />
+        </div>
+        <div>
+            <label class="block text-base font-semibold text-gray-700 mb-2">Số điện thoại</label><br />
+            <input asp-for="SoDienThoai" class="w-full border px-4 py-2 rounded" required />
+        </div>
+        <div>
+            <label class="block text-base font-semibold text-gray-700 mb-2">Địa chỉ giao hàng</label><br />
+            <input asp-for="DiaChi" class="w-full border px-4 py-2 rounded" required />
+        </div>
+        <div>
+            <label class="block text-base font-semibold text-gray-700 mb-2">Số tài khoản ngân hàng</label><br />
+            <input asp-for="SoTaiKhoan" class="w-full border px-4 py-2 rounded" required />
+        </div>
+
+        <button type="submit" class="w-full bg-red-600 text-black py-3 rounded mt-6 hover:bg-red-700 font-semibold">
+            Xác nhận thanh toán
+        </button>
+    </form>
+</div>
